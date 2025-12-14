@@ -1,0 +1,117 @@
+@startuml
+title Job Scheduling System - System Architecture Diagram
+
+left to right direction
+skinparam componentStyle rectangle
+skinparam shadowing false
+
+skinparam package {
+  BorderColor Black
+  FontStyle bold
+}
+
+package "Frontend Layer\nAngular" {
+
+  component "Input Form\nJobs, Machines,\nDependencies" as UI1
+  component "Algorithm Selector\nBacktracking / Cultural" as UI2
+  component "Random Generator UI" as UI3
+  component "Results Viewer" as UI4
+  component "Gantt Chart Visualizer" as UI5
+  component "Logs Display" as UI6
+  component "Performance Comparator" as UI7
+}
+
+package "API Layer\nFastAPI" {
+
+  component "POST /api/solve" as API1
+  component "POST /api/random" as API2
+}
+
+package "Core Processing Layer" {
+
+  component "Input Validator" as CORE1
+  component "Dependency Resolver" as CORE2
+  component "Algorithm Router" as CORE3
+}
+
+package "Algorithm Layer" {
+
+  package "Backtracking Algorithm" {
+
+    component "Recursive Solver" as BT1
+    component "Constraint Checker" as BT2
+    component "Pruning Logic" as BT3
+    component "Best Solution Tracker" as BT4
+  }
+
+  package "Cultural Algorithm" {
+
+    component "Population Generator" as CA1
+    component "Fitness Evaluator" as CA2
+    component "Selection Operator" as CA3
+    component "Mutation Operator" as CA4
+    component "Elite Preservation" as CA5
+  }
+}
+
+package "Output Processing Layer" {
+
+  component "Schedule Builder" as OUT1
+  component "Makespan Calculator" as OUT2
+  component "Execution Logger" as OUT3
+  component "Result Formatter" as OUT4
+}
+
+package "Data Models" {
+
+  database "Job\nid, name,\nduration,\ndependencies" as D1
+  database "Schedule Request\njobs, machines,\nalgorithm" as D2
+  database "Schedule Result\nmakespan, time,\nschedule, logs" as D3
+  database "Task Result\njob, machine,\nstart, end" as D4
+}
+
+' ===================== Connections =====================
+
+UI1 --> API1
+UI2 --> API1
+UI3 --> API2
+
+API1 --> CORE1
+API1 --> D2
+API2 --> OUT4
+
+CORE1 --> CORE2
+CORE2 --> CORE3
+
+CORE3 --> BT1
+CORE3 --> CA1
+
+BT1 --> BT2
+BT2 --> BT3
+BT3 --> BT4
+
+CA1 --> CA2
+CA2 --> CA3
+CA3 --> CA4
+CA4 --> CA5
+CA5 --> CA2
+
+BT4 --> OUT1
+CA5 --> OUT1
+
+OUT1 --> OUT2
+OUT1 --> OUT3
+OUT2 --> OUT4
+OUT3 --> OUT4
+
+OUT4 --> D3
+D3 --> UI4
+D3 --> UI5
+D3 --> UI6
+D3 --> UI7
+
+D1 ..> CORE1
+D2 ..> CORE3
+D4 ..> OUT1
+
+@enduml

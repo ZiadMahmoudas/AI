@@ -1,0 +1,115 @@
+@startuml
+title Job Scheduling System - Class Diagram
+
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor #FAFAFA
+  BorderColor #333
+  ArrowColor #555
+}
+
+package "Data Models" {
+
+  class Job {
+    +id : int
+    +name : string
+    +duration : int
+    +dependencies : List<int>
+  }
+
+  class ScheduleRequest {
+    +jobs : List<Job>
+    +num_machines : int
+    +algorithm : string
+  }
+
+  class TaskResult {
+    +job : Job
+    +machine : int
+    +start : int
+    +end : int
+  }
+
+  class ScheduleResult {
+    +success : bool
+    +makespan : float
+    +execution_time : float
+    +schedule : List<List<TaskResult>>
+    +logs : List<string>
+    +iterations : Optional<int>
+  }
+}
+
+package "Algorithms" {
+
+  class SimpleBacktracking {
+    -jobs : List<Job>
+    -num_machines : int
+    -best_makespan : float
+    -best_schedule : List
+    -iterations : int
+    -logs : List<string>
+
+    +SimpleBacktracking(jobs, num_machines)
+    +solve() : ScheduleResult
+
+    -_backtrack(job_idx, schedule, assigned)
+    -_get_makespan(schedule) : float
+  }
+
+  class SimpleCultural {
+    -jobs : List<Job>
+    -num_machines : int
+    -pop_size : int
+    -generations : int
+    -logs : List<string>
+
+    +SimpleCultural(jobs, num_machines)
+    +solve() : ScheduleResult
+
+    -_random_solution() : List
+    -_fitness(solution) : float
+    -_mutate(solution) : List
+    -_to_schedule_format(solution) : List
+  }
+}
+
+package "API Layer" {
+
+  class FastAPIController {
+    +solve_schedule(request : ScheduleRequest) : ScheduleResult
+    +generate_random(num_jobs : int, num_machines : int) : dict
+  }
+}
+
+' ================== Relationships ==================
+
+ScheduleRequest "1" --> "*" Job : contains
+ScheduleResult "1" --> "*" TaskResult : contains
+TaskResult "*" --> "1" Job : references
+
+SimpleBacktracking ..> Job : uses
+SimpleBacktracking ..> ScheduleResult : returns
+SimpleBacktracking ..> TaskResult : creates
+
+SimpleCultural ..> Job : uses
+SimpleCultural ..> ScheduleResult : returns
+SimpleCultural ..> TaskResult : creates
+
+FastAPIController ..> ScheduleRequest : receives
+FastAPIController ..> ScheduleResult : returns
+FastAPIController ..> SimpleBacktracking : creates
+FastAPIController ..> SimpleCultural : creates
+
+note right of SimpleBacktracking
+  Uses recursive backtracking
+  with pruning and constraints
+end note
+
+note right of SimpleCultural
+  Evolutionary algorithm
+  with population, selection,
+  and mutation
+end note
+
+@enduml

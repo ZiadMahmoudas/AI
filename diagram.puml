@@ -1,0 +1,172 @@
+@startuml
+title Job Scheduling System - Activity Diagram
+
+start
+:User Opens Application;
+
+if (Input Method?) then (Manual Entry)
+  :Enter Job Details\nID, Name, Duration, Dependencies;
+  :Specify Number of Machines;
+else (Generate Random)
+  :Set Parameters\nnum_jobs, num_machines;
+  :API Generate Random Problem;
+  :Auto-fill Form with Generated Data;
+  :Specify Number of Machines;
+endif
+
+:Select Algorithm;
+
+:Validate Input Data;
+if (Valid Input?) then (No)
+  :Display Validation Errors;
+  :Enter Job Details;
+else (Yes)
+  :Send Request to API;
+endif
+
+if (Algorithm Type?) then (Backtracking)
+  :Initialize Backtracking Solver;
+
+  repeat
+    :Check Job Dependencies;
+    if (Dependencies Satisfied?) then (No)
+      :Skip to Next Job;
+    else (Yes)
+      :Try Each Machine;
+      :Calculate Start/End Time;
+
+      if (start >= best_makespan?) then (Yes)
+        :Backtrack;
+      else (No)
+        :Assign Job to Machine;
+      endif
+    endif
+  repeat while (More Jobs?)
+
+  :Update Best Solution;
+
+  if (Iterations > 5000?) then (Yes)
+    :Backtracking Complete;
+  endif
+
+elseif (Cultural)
+  :Initialize Cultural Algorithm;
+  :Generate Random Population\nSize = 20;
+
+  repeat
+    :Evaluate Fitness\nCalculate Makespan;
+    :Selection Keep Top 20%;
+    :Crossover Generate Offspring;
+    :Mutation Random Machine Change;
+    :Evaluate New Generation;
+    :Update Best Solution;
+  repeat while (Generation < 30?)
+
+  :Cultural Algorithm Complete;
+endif
+
+:Build Schedule Format;
+:Calculate Final Makespan;
+:Format Execution Logs;
+:Send Response to Frontend;
+
+:Parse JSON Response;
+:Display Gantt Chart;
+:Display Execution Logs;
+:Display Performance Metrics\nMakespan, Execution Time;
+
+if (User Action?) then (Compare)
+  :Compare Both Algorithms;
+elseif (New Problem)
+  :New Input;
+else (Exit)
+  stop
+endif
+
+@enduml
+@startuml
+title Job Scheduling System - Activity Diagram
+
+start
+:User Opens Application;
+
+if (Input Method?) then (Manual Entry)
+  :Enter Job Details\nID, Name, Duration, Dependencies;
+  :Specify Number of Machines;
+else (Generate Random)
+  :Set Parameters\nnum_jobs, num_machines;
+  :API Generate Random Problem;
+  :Auto-fill Form with Generated Data;
+  :Specify Number of Machines;
+endif
+
+:Select Algorithm;
+
+:Validate Input Data;
+if (Valid Input?) then (No)
+  :Display Validation Errors;
+  :Enter Job Details;
+else (Yes)
+  :Send Request to API;
+endif
+
+if (Algorithm Type?) then (Backtracking)
+  :Initialize Backtracking Solver;
+
+  repeat
+    :Check Job Dependencies;
+    if (Dependencies Satisfied?) then (No)
+      :Skip to Next Job;
+    else (Yes)
+      :Try Each Machine;
+      :Calculate Start/End Time;
+
+      if (start >= best_makespan?) then (Yes)
+        :Backtrack;
+      else (No)
+        :Assign Job to Machine;
+      endif
+    endif
+  repeat while (More Jobs?)
+
+  :Update Best Solution;
+
+  if (Iterations > 5000?) then (Yes)
+    :Backtracking Complete;
+  endif
+
+elseif (Cultural)
+  :Initialize Cultural Algorithm;
+  :Generate Random Population\nSize = 20;
+
+  repeat
+    :Evaluate Fitness\nCalculate Makespan;
+    :Selection Keep Top 20%;
+    :Crossover Generate Offspring;
+    :Mutation Random Machine Change;
+    :Evaluate New Generation;
+    :Update Best Solution;
+  repeat while (Generation < 30?)
+
+  :Cultural Algorithm Complete;
+endif
+
+:Build Schedule Format;
+:Calculate Final Makespan;
+:Format Execution Logs;
+:Send Response to Frontend;
+
+:Parse JSON Response;
+:Display Gantt Chart;
+:Display Execution Logs;
+:Display Performance Metrics\nMakespan, Execution Time;
+
+if (User Action?) then (Compare)
+  :Compare Both Algorithms;
+elseif (New Problem)
+  :New Input;
+else (Exit)
+  stop
+endif
+
+@enduml

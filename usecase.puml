@@ -1,0 +1,48 @@
+@startuml
+title Job Scheduling System - Use Case Diagram
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+skinparam usecase {
+  BackgroundColor #F5F5F5
+  BorderColor #333
+}
+
+actor User
+actor System
+
+rectangle "Job Scheduling System" {
+
+  package "Scheduling" {
+    usecase UC1 as "Submit Scheduling Request"
+  }
+
+  package "Algorithm Execution" {
+    usecase UC3 as "Run Backtracking Algorithm"
+    usecase UC4 as "Run Cultural Algorithm"
+  }
+
+  package "Results and Comparison" {
+    usecase UC5 as "View Schedule Results"
+    usecase UC6 as "View Execution Logs"
+    usecase UC7 as "Compare Performance"
+  }
+
+  package "System Utilities" {
+    usecase UC8 as "Validate Input Data"
+  }
+}
+
+User --> UC1
+User --> UC3
+User --> UC4
+User --> UC7
+
+UC7 --> UC5
+UC7 --> UC6
+
+UC1 ..> UC8 : <<include>>
+System --> UC8
+
+@enduml
